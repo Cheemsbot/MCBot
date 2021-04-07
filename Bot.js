@@ -280,15 +280,11 @@ bot.on('whisper', (username, message, rawMessage) => {
 bot.on('nonSpokenChat', (message) => {
   console.log(`Non spoken chat: ${message}`)
 })
-
-bot.on('login', () => {
-  bot.chat('Hi everyone!')
-})
 bot.on('spawn', () => {
   bot.chat('I spawned, watch out!')
 })
 bot.on('spawnReset', (message) => {
-  bot.chat('Oh noez! My bed is broken.')
+  bot.chat('My bed is broken :/')
 })
 bot.on('forcedMove', () => {
   bot.chat(`I have been forced to move to ${bot.entity.position}`)
