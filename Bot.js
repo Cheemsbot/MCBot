@@ -13,7 +13,7 @@ var fs = require('fs');
 var path = require('path');
 
 if (process.argv.length < 4 || process.argv.length > 6) {
-  console.log('Usage : node bot.js <host> <port> [<name>] [<password>]')
+  console.log('Usage : node Bot.js <host> <port> [<name>] [<password>]')
   process.exit(1)
 }
 
