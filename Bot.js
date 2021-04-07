@@ -2,6 +2,13 @@ const mineflayer = require('mineflayer')
 const pvp = require('mineflayer-pvp').plugin
 const { pathfinder, Movements, goals} = require('mineflayer-pathfinder')
 const armorManager = require('mineflayer-armor-manager')
+const collectBlock = require('mineflayer-collectblock').plugin
+const mineflayerViewer = require('prismarine-viewer').mineflayer
+
+if (process.argv.length < 4 || process.argv.length > 6) {
+  console.log('Usage : node Bot.js <host> <port> [<name>] [<password>]')
+  process.exit(1)
+}
 
 const bot = mineflayer.createBot({
     host: process.argv[2],
@@ -14,7 +21,16 @@ const bot = mineflayer.createBot({
 bot.loadPlugin(pvp)
 bot.loadPlugin(armorManager)
 bot.loadPlugin(pathfinder)
+bot.loadPlugin(collectBlock)
 
+let mcData
+bot.once('spawn', () => {
+  mcData = require('minecraft-data')(bot.version)
+})
+
+bot.once('spawn', () => {
+  mineflayerViewer(bot, { port: 3007, firstPerson: false })
+})
 
 bot.on('playerCollect', (collector, itemDrop) => {
   if (collector !== bot.entity) return
@@ -103,7 +119,7 @@ bot.on('chat', (username, message) => {
       return
     }
 
-    bot.chat('Prepare to fight!')
+    bot.chat("Prepare to fight,"[username])
     bot.pvp.attack(player.entity)
   }
 
@@ -111,4 +127,35 @@ bot.on('chat', (username, message) => {
     bot.chat('I will no longer guard this area.')
     stopGuarding()
   }
+})
+
+// wait for chat message 
+bot.on('chat', (username, message) => {
+  const args = message.split(' ')
+  if (args[0] !== 'collect') return
+
+  // Get the correct block type
+  const blockType = mcData.blocksByName[args[1]]
+  if (!blockType) {
+    bot.chat("I don't know any blocks with that name.")
+    return
+  }
+
+  bot.chat('Collecting the nearest ' + blockType.name)
+
+  // Try and find that block type in the world
+  const block = bot.findBlock({
+    matching: blockType.id,
+    maxDistance: 64
+  })
+
+  if (!block) {
+    bot.chat("I don't see that block nearby.")
+    return
+  }
+
+  // Collect the block if we found one
+  bot.collectBlock.collect(block, err => {
+    if (err) bot.chat(err.message)
+  })
 })
