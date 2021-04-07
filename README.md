@@ -3,4 +3,4 @@ A minecraft bot that is using mineflayer.
 
 The discord for this is (removed)
 
-Submit a pull request and I will see if it fits
+To contribute: Fork the repo, Add some stuff, Submit a pull request.
