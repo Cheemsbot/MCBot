@@ -184,7 +184,7 @@ for (plugin in plugins) {
       console.log(plugin, 'has no inject function.');
   }
 }
-}
+
 
 /*
 process.on('uncaughtException', (e) => {
