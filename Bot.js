@@ -6,7 +6,6 @@ const collectBlock = require('mineflayer-collectblock').plugin
 const mineflayerViewer = require('prismarine-viewer').mineflayer
 const Vec3 = require('vec3').Vec3
 var secrets = require('./secrets');
-var mineflayer = require('mineflayer');
 var navigatePlugin = require('mineflayer-navigate')(mineflayer);
 var scaffoldPlugin = require('mineflayer-scaffold')(mineflayer);
 var requireIndex = require('requireindex');
