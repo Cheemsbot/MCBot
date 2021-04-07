@@ -4,6 +4,13 @@ const { pathfinder, Movements, goals} = require('mineflayer-pathfinder')
 const armorManager = require('mineflayer-armor-manager')
 const collectBlock = require('mineflayer-collectblock').plugin
 const mineflayerViewer = require('prismarine-viewer').mineflayer
+var secrets = require('./secrets');
+var mineflayer = require('mineflayer');
+var navigatePlugin = require('mineflayer-navigate')(mineflayer);
+var scaffoldPlugin = require('mineflayer-scaffold')(mineflayer);
+var requireIndex = require('requireindex');
+var fs = require('fs');
+var path = require('path');
 
 if (process.argv.length < 4 || process.argv.length > 6) {
   console.log('Usage : node Bot.js <host> <port> [<name>] [<password>]')
@@ -159,3 +166,30 @@ bot.on('chat', (username, message) => {
     if (err) bot.chat(err.message)
   })
 })
+
+bot.setTimeout = function (fn, delay) {
+  setTimeout(function () {
+    if(bot.connected) {
+      fn();
+    }
+  }, delay);
+}
+navigatePlugin(bot);
+scaffoldPlugin(bot);
+var plugins = requireIndex(path.join(__dirname, 'lib', 'plugins'));
+for (plugin in plugins) {
+  if (plugins[plugin].inject != null) {
+      plugins[plugin].inject(bot);
+  } else {
+      console.log(plugin, 'has no inject function.');
+  }
+}
+}
+
+/*
+process.on('uncaughtException', (e) => {
+console.log(e);
+});
+*/
+
+init();
