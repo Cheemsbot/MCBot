@@ -5,6 +5,7 @@ const armorManager = require('mineflayer-armor-manager')
 const collectBlock = require('mineflayer-collectblock').plugin
 const mineflayerViewer = require('prismarine-viewer').mineflayer
 const Vec3 = require('vec3').Vec3
+const autoeat = require('mineflayer-auto-eat')
 var secrets = require('./secrets');
 var navigatePlugin = require('mineflayer-navigate')(mineflayer);
 var scaffoldPlugin = require('mineflayer-scaffold')(mineflayer);
@@ -29,10 +30,47 @@ bot.loadPlugin(pvp)
 bot.loadPlugin(armorManager)
 bot.loadPlugin(pathfinder)
 bot.loadPlugin(collectBlock)
+bot.loadPlugin(autoeat)
 
 let mcData
 bot.once('spawn', () => {
   mcData = require('minecraft-data')(bot.version)
+})
+
+bot.once('spawn', () => {
+  bot.autoEat.options = {
+    priority: 'foodPoints',
+    startAt: 14,
+    bannedFood: []
+  }
+})
+// The bot eats food automatically and emits these events when it starts eating and stops eating.
+
+bot.on('autoeat_started', () => {
+  console.log('Auto Eat started!')
+})
+
+bot.on('autoeat_stopped', () => {
+  console.log('Auto Eat stopped!')
+})
+
+bot.on('health', () => {
+  if (bot.food === 20) bot.autoEat.disable()
+  // Disable the plugin if the bot is at 20 food points
+  else bot.autoEat.enable() // Else enable the plugin again
+})
+
+bot.on('spawn', () => {
+  const mcData = require('minecraft-data')(bot.version) // You will know the version when the bot has spawned
+  const totemId = mcData.itemsByName.totem_of_undying.id // Get the correct id
+  if (mcData.itemsByName.totem_of_undying) {
+    setInterval(() => {
+      const totem = bot.inventory.findInventoryItem(totemId, null)
+      if (totem) {
+        bot.equip(totem, 'off-hand')
+      }
+    }, 50)
+  }
 })
 
 bot.once('spawn', () => {
