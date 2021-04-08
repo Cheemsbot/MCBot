@@ -1,6 +1,7 @@
 const mineflayer = require('mineflayer')
 const pvp = require('mineflayer-pvp').plugin
 const { pathfinder, Movements, goals} = require('mineflayer-pathfinder')
+var blockFinderPlugin = require('mineflayer-blockfinder')(mineflayer);
 const armorManager = require('mineflayer-armor-manager')
 const collectBlock = require('mineflayer-collectblock').plugin
 const mineflayerViewer = require('prismarine-viewer').mineflayer
@@ -31,6 +32,7 @@ bot.loadPlugin(armorManager)
 bot.loadPlugin(pathfinder)
 bot.loadPlugin(collectBlock)
 bot.loadPlugin(autoeat)
+bot.loadPlugin('mineflayer-blockfinder')(mineflayer)
 
 let mcData
 bot.once('spawn', () => {
@@ -433,3 +435,23 @@ bot.on('entityEffectEnd', (entity, effect) => {
   console.log('entityEffectEnd', entity, effect)
 })
 
+bot.once('spawn', function() {
+  bot.findBlock({
+    point: bot.entity.position,
+    matching: 10,
+    matching: 11,
+    maxDistance: 256,
+    count: 1,
+  }, function(err, blocks) {
+    if (err) {
+      return bot.chat('/stop' + err);
+      bot.quit('quitting');
+      return;
+    }
+    if (blocks.length) {
+      bot.chat('/stop');
+      bot.quit('quitting');
+      return;
+    } 
+  });
+});
