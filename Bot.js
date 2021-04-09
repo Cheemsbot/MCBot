@@ -440,7 +440,7 @@ bot.once('spawn', function() {
     point: bot.entity.position,
     matching: 10,
     matching: 11,
-    maxDistance: 256,
+    maxDistance: 1,
     count: 1,
   }, function(err, blocks) {
     if (err) {
