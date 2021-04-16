@@ -435,23 +435,9 @@ bot.on('entityEffectEnd', (entity, effect) => {
   console.log('entityEffectEnd', entity, effect)
 })
 
-bot.once('spawn', function() {
-  bot.findBlock({
-    point: bot.entity.position,
-    matching: 10,
-    matching: 11,
-    maxDistance: 1,
-    count: 1,
-  }, function(err, blocks) {
-    if (err) {
-      return bot.chat('/stop' + err);
-      bot.quit('quitting');
-      return;
-    }
-    if (blocks.length) {
-      bot.chat('/stop');
-      bot.quit('quitting');
-      return;
-    } 
-  });
-});
+
+
+
+
+
+
